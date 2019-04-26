@@ -1,0 +1,3 @@
+[submodule "b2share"]
+	path = b2share
+	url = git@git.ia.surfsara.nl:stefanwo/b2share.git

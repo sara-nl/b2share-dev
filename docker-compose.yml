@@ -1,0 +1,86 @@
+version: '2'
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    volumes:
+      - "$PWD:/build"
+#    volumes:
+#      - "${B2SHARE_DATADIR}/postgres-data:/var/lib/postgresql/data"
+    hostname: db
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile.elasticsearch
+    hostname: elasticsearch
+    expose:
+      - "9200"
+      - "9300"
+    ports:
+      - "127.0.0.1:9200:9200"
+      - "127.0.0.1:9300:9300"
+
+
+  redis:
+    image: redis:3.2-alpine
+    expose:
+      - "6379"
+#   volumes:
+#     - "${B2SHARE_DATADIR}/redis-data:/data"
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  mq:
+    hostname: b2share-redis
+    image: rabbitmq:3.6-management-alpine
+    restart: "always"
+    environment:
+      - "RABBITMQ_DEFAULT_USER=b2share"
+      - "RABBITMQ_DEFAULT_PASS=b2share"
+#    volumes:
+#      - "${B2SHARE_DATADIR}/rabbitmq-data:/var/lib/rabbitmq"
+    expose:
+      - "15672"
+      - "5672"
+    ports:
+      - "127.0.0.1:15672:15672"
+      - "127.0.0.1:5672:5672"
+
+  b2share:
+    build:
+      context: .
+      dockerfile: Dockerfile.b2share
+    environment:
+      - "B2ACCESS_CONSUMER_KEY=${B2ACCESS_CONSUMER_KEY}"
+      - "B2ACCESS_SECRET_KEY=${B2ACCESS_SECRET_KEY}"
+      - "USE_STAGING_B2ACCESS=${USE_STAGING_B2ACCESS}"
+      - "B2SHARE_SECRET_KEY=${B2SHARE_SECRET_KEY}"
+      - "B2SHARE_JSONSCHEMAS_HOST=${B2SHARE_JSONSCHEMAS_HOST}"
+      - "INIT_DB_AND_INDEX=${INIT_DB_AND_INDEX}"
+      - "LOAD_DEMO_COMMUNITIES_AND_RECORDS=${LOAD_DEMO_COMMUNITIES_AND_RECORDS}"
+      - "B2SHARE_PREFERRED_URL_SCHEME=https"
+      - "B2SHARE_SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://${B2SHARE_POSTGRESQL_USER}:${B2SHARE_POSTGRESQL_PASSWORD}@postgres:5432/${B2SHARE_POSTGRESQL_DBNAME}'"
+      - "B2SHARE_CACHE_REDIS_HOST='redis'"
+      - "B2SHARE_CACHE_REDIS_URL='redis://redis:6379/0'"
+      - "B2SHARE_ACCOUNTS_SESSION_REDIS_URL='redis://redis:6379/1'"
+      - "B2SHARE_BROKER_URL='amqp://${B2SHARE_RABBITMQ_USER}:${B2SHARE_RABBITMQ_PASS}@mq:5672/'"
+      - "B2SHARE_CELERY_BROKER_URL='amqp://${B2SHARE_RABBITMQ_USER}:${B2SHARE_RABBITMQ_PASS}@mq:5672/'"
+      - "B2SHARE_CELERY_RESULT_BACKEND='redis://redis:6379/2'"
+      - "B2SHARE_SEARCH_ELASTIC_HOSTS='elasticsearch'"
+      - "B2SHARE_UI_PATH=/build/b2share/webui/app"
+      - "PYTHONPATH=/build/b2share:/build/b2share/demo"
+    volumes:
+      - "$PWD:/build"
+    expose:
+      - "5000"
+    ports:
+      - "127.0.0.1:5000:5000"
+      - "127.0.0.1:1984:1984"
+    links:
+      - elasticsearch
+      - redis
+      - postgres
