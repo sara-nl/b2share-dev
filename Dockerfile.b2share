@@ -85,7 +85,7 @@ ADD b2share/requirements.txt requirements.txt
 RUN pip3.5 install -r requirements.txt
 RUN pip3.5 install -e .
 RUN pip3.5 install .[test]
-RUN pip3.5 install wdb.server wdb flask-wdb
+RUN pip3.5 install Tornado==5.0 wdb.server wdb flask-wdb
 
 WORKDIR /eudat/b2share/demo
 ADD b2share/demo/setup.py setup.py
@@ -108,9 +108,6 @@ COPY supervisord.conf /etc/
 
 ADD _b2share.py /bin/b2share
 ADD init_ui.sh /bin/init_ui.sh
-
-ADD wdbfix.patch /wdbfix.patch
-RUN patch /usr/lib/python3.5/site-packages/wdb_server/__init__.py < /wdbfix.patch
 
 WORKDIR /build
 CMD ["/usr/bin/supervisord"]

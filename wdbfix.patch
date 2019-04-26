@@ -1,5 +1,0 @@
-373,374c373
-<     request_timeout=1,
-<     raise_error=False
----
->     request_timeout=1
