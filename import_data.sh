@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# sudo -u postgres psql b2share -c "drop database b2share;"
-# sudo -u postgres psql b2share -c "create database b2share;"
-# sudo -u postgres psql b2share -c "grant all on database b2share to b2share;"
-# sudo -u postgres psql b2share < /build/dump/b2share.sql
+sudo -u postgres psql b2share -c "drop database b2share;"
+sudo -u postgres psql b2share -c "create database b2share;"
+sudo -u postgres psql b2share -c "grant all on database b2share to b2share;"
+sudo -u postgres psql b2share < /build/dump/b2share.sql
 
 (
 sudo -u postgres psql b2share -P pager=off -t -c \
