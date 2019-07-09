@@ -60,6 +60,17 @@ python generate_fake_dois.py --dryrun
 python generate_fake_dois.py
 python generate_fake_dois.py --dryrun
 ```
+After generation of fake dois:
+```
+goinside b2share-dev_b2share_1:
+
+b2share index destroy
+b2share index init
+b2share index run
+b2share index reindex --yes-i-know
+b2share index run
+```
+
 Validate records
 
 Get token from b2share and store it as validator/token.txt

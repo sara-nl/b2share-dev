@@ -99,6 +99,8 @@ def iterate_records(baseurl):
     while url:
         r = requests.get(url)
         data = r.json()
+        # import pprint
+        #pprint.pprint(data)
         for hit in data.get('hits', {}).get('hits', []):
             yield hit
         url = data.get('links', {}).get('next', None)
@@ -124,15 +126,14 @@ def get_oai_pmh(baseurl, record_id, prefix):
     url = tmp_url.format(baseurl=baseurl,
                          prefix=prefix,
                          record_id=record_id)
-
     try:
         doc = etree.parse(url)
         # print(etree.tostring(doc, pretty_print=True).decode())
         return doc
     except OSError as e:
         json_record = get_record(baseurl, record_id)
-        import pprint
-        pprint.pprint(json_record, indent=4)
+        # import pprint
+        # pprint.pprint(json_record, indent=4)
         # print("------------------")
         # print(url)
         # r = requests.get(url)
@@ -182,7 +183,7 @@ def main():
             language_count[language] += 1
             if args.validate:
                 try:
-                    oai_pmh = get_oai_pmh(baseurl, record['id'], 'oai_datacite')
+                    oai_pmh = get_oai_pmh(baseurl, record['id'], 'oai_openaire')
                     resource = get_data_cite_resource(oai_pmh)
                     validation = validate_xml(schema,
                                               resource,
