@@ -3,6 +3,10 @@
 sudo -u postgres psql -c "drop database b2share;"
 sudo -u postgres psql -c "create database b2share;"
 sudo -u postgres psql -c "grant all on database b2share to b2share;"
+
+sudo -u postgres psql -c "create user invenio with password 'invenio'";
+sudo -u postgres psql -c "grant all on database b2share to invenio;"
+
 sudo -u postgres psql b2share < /build/dump/b2share.sql
 
 (
