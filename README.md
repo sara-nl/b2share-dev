@@ -80,9 +80,9 @@ cd validator
 pipenv shell
 
 # aggregate languages
-python validate.py --lang --token token.txt  --schema datacite/metadata.xsd
+python validate.py --lang --token token.txt  --schema datacite-v3/metadata.xsd
 
 # validate
-python validate.py --validate --token token.txt  --schema datacite/metadata.xsd
+python validate.py --validate --token token.txt  --schema datacite-v4/metadata.xsd
 ```
 
