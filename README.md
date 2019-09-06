@@ -1,15 +1,15 @@
 # B2SHARE dev env
 
-## Pull in all submodules
-
-```
-git submodule update --recursive --init
-```
-
 ## Start docker composite
 
 ```
-docker-compose up
+B2SAHRE=/path/to/b2share/git/repo docker-compose up
+```
+
+for example:
+
+```
+B2SHARE=../b2share docker-compose up
 ```
 
 ## Prepare UI:
