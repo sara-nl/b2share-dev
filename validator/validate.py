@@ -150,6 +150,17 @@ def get_data_cite_resource(oai_xml):
     return etree.ElementTree(resource)
 
 
+def print_validation_result(resource, validation):
+    print("Input:")
+    print("------")
+    print(etree.tostring(resource,
+                         pretty_print=True).decode("utf-8"))
+    print("Result:")
+    print("------")
+    print(validation)
+    print("-------")
+
+
 def main():
     language_count = {}
     descr = 'Validate Datacite / OpenAire Schemas.'
@@ -159,13 +170,24 @@ def main():
     parser.add_argument('--baseurl', type=str, help='url',
                         default="http://127.0.0.1:5000")
     parser.add_argument('--token', type=FileType('r'))
+    parser.add_argument('--prefix',
+                        type=str,
+                        help='MetaData prefix',
+                        choices=['oai_openaire',
+                                 'oai_datacite',
+                                 'oai_datacite3',
+                                 'oai_datacite4',
+                                 'marcxml'],
+                        default='oai_openaire')
     parser.add_argument('--verbose', action="store_true")
+    parser.add_argument('--print_xml', action="store_true", help="print xml documents")
     parser.add_argument('--lang', help="aggregate languages", action="store_true")
     parser.add_argument('--validate', help="validate oai_pmh", action="store_true")
     args = parser.parse_args()
     TOKEN = "".join(args.token.readlines())
     schema = load_xsd_file(args.schema)
-
+    prefix = args.prefix
+    print_xml = args.print_xml
     print("i,community,name,errtype,element")
     if args.xmlfile is not None:
         doc = load_xml_file(args.xmlfile)
@@ -183,12 +205,16 @@ def main():
             language_count[language] += 1
             if args.validate:
                 try:
-                    oai_pmh = get_oai_pmh(baseurl, record['id'], 'oai_openaire')
+                    oai_pmh = get_oai_pmh(baseurl,
+                                          record['id'],
+                                          prefix)
                     resource = get_data_cite_resource(oai_pmh)
                     validation = validate_xml(schema,
                                               resource,
                                               community=community,
                                               name=record['id'])
+                    if print_xml:
+                        print_validation_result(resource, validation)
                     if not validation['errtype']:
                         validation['errtype'] = '' 
                 except Exception as e:
