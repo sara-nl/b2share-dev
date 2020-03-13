@@ -3,7 +3,7 @@
 ## Start docker composite
 
 ```
-B2SAHRE=/path/to/b2share/git/repo docker-compose up
+B2SHARE=/path/to/b2share/git/repo docker-compose up
 ```
 
 for example:
@@ -15,22 +15,25 @@ B2SHARE=../b2share docker-compose up
 ## Prepare UI
 (one time)
 
-go inside container b2share-dev_b2share_1
-
+Go inside container `b2share-dev_b2share_1` and run the `init_ui.sh` script:
 
 ```
+goinside b2share-dev_b2share_1
 ./init_ui.sh
 ```
 
 ## Init demo data
 
-go inside container b2share-dev_b2share_1
+Go inside container `b2share-dev_b2share_1` and run the `init_data.sh` script:
 
 ```
+goinside b2share-dev_b2share_1
 ./init_data.sh
 ```
 
 ## Run B2SHARE
+
+Go inside container `b2share-dev_b2share_1` and run the `run.sh` script:
 
 ```
 goinside b2share-dev_b2share_1
@@ -86,4 +89,3 @@ python validate.py --lang --token token.txt  --schema datacite-v3/metadata.xsd
 # validate
 python validate.py --validate --token token.txt  --schema datacite-v4/metadata.xsd
 ```
-
