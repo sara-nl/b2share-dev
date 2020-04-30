@@ -4,6 +4,8 @@ __pycache__
 validator/Pipfile
 validator/Pipfile.lock
 b2share*/
+keys/
 elasticsearch/
+instance/
 .env
 *.env

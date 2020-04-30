@@ -45,12 +45,12 @@ services:
       - "127.0.0.1:5672:5672"
 
   b2share:
+    #image: eudatb2share/b2share:2.1.4
     build:
       context: .
       dockerfile: Dockerfile.b2share
     env_file:
       - .env
-      - pid.env
     environment:
       - "B2SHARE_SQLALCHEMY_DATABASE_URI='postgresql+psycopg2://${B2SHARE_POSTGRESQL_USER}:${B2SHARE_POSTGRESQL_PASSWORD}@postgres:5432/${B2SHARE_POSTGRESQL_DBNAME}'"
       - "B2SHARE_CACHE_REDIS_HOST='redis'"
@@ -61,7 +61,7 @@ services:
     volumes:
       - "$PWD:/build"
       - "$B2SHARE:/build/b2share"
-      - "$KEYS:/build/keys"
+      - "./instance:/usr/var/b2share-instance"
     expose:
       - "5000"
     ports:
