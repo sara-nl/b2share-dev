@@ -49,7 +49,6 @@ services:
       - "127.0.0.1:5672:5672"
 
   b2share:
-    #image: eudatb2share/b2share:2.1.4
     build:
       context: .
       dockerfile: Dockerfile.b2share
@@ -75,3 +74,10 @@ services:
       - elasticsearch
       - redis
       - postgres
+
+  nginx:
+    build: nginx
+    ports:
+      - "80:80/tcp"
+    links:
+      - b2share
