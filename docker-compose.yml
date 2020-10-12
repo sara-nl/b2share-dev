@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile.postgres
     volumes:
-      - "$PWD/..:/build"
+      - "./instance/postgres:/var/lib/postgresql/data"
     hostname: db
     ports:
       - "127.0.0.1:5432:5432"
@@ -18,9 +18,13 @@ services:
     expose:
       - "9200"
       - "9300"
+    volumes:
+      - "./instance/elasticsearch:/usr/share/elasticsearch/data"
     ports:
       - "127.0.0.1:9200:9200"
       - "127.0.0.1:9300:9300"
+    links:
+      - postgres
 
 
   redis:
@@ -59,7 +63,7 @@ services:
       - "B2SHARE_BROKER_URL='amqp://${B2SHARE_RABBITMQ_USER}:${B2SHARE_RABBITMQ_PASS}@mq:5672/'"
       - "B2SHARE_CELERY_BROKER_URL='amqp://${B2SHARE_RABBITMQ_USER}:${B2SHARE_RABBITMQ_PASS}@mq:5672/'"
     volumes:
-      - "$PWD:/build"
+      - ".:/build"
       - "$B2SHARE:/build/b2share"
       - "./instance:/usr/var/b2share-instance"
     expose:
