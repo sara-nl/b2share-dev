@@ -22,6 +22,23 @@ goinside b2share-dev_b2share_1
 ./init_ui.sh
 ```
 
+When updating any React or JS files, rerun this command or run:
+
+```
+npx webpack [--config webpack.config.devel.js]
+```
+
+in the `webui` folder.
+
+## Init configuration and run upgrades
+
+Go inside container `b2share-dev_b2share_1` and run the `init_config.sh` script:
+
+```
+goinside b2share-dev_b2share_1
+./init_config.sh
+```
+
 ## Init demo data
 
 Go inside container `b2share-dev_b2share_1` and run the `init_data.sh` script:
@@ -29,6 +46,14 @@ Go inside container `b2share-dev_b2share_1` and run the `init_data.sh` script:
 ```
 goinside b2share-dev_b2share_1
 ./init_data.sh
+```
+
+## Init index
+Create elasticsearch index:
+
+```
+goinside b2share-dev_b2share_1
+./init_index.sh
 ```
 
 ## Run B2SHARE
@@ -40,23 +65,9 @@ goinside b2share-dev_b2share_1
 ./run.sh
 ```
 
-## Install test data
+## Optional
 
-Create postgres tables:
-
-```
-goinside b2share-dev_postgres_1
-/build/import_data.sh
-```
-
-Create elasticsearch index:
-
-```
-goinside b2share-dev_b2share_1
-./init_index.sh
-```
-
-## Create Fake DOIs and validate data
+### Create Fake DOIs and validate data
 
 Install package `libpq-dev`
 
@@ -75,7 +86,7 @@ goinside b2share-dev_b2share_1:
 ./init_index.sh
 ```
 
-## Validate records
+### Validate records
 
 Get token from B2SHARE and store it as `validator/token.txt`
 
