@@ -1,14 +1,16 @@
-version: '2'
+version: '2.3'
 services:
   postgres:
-    build:
-      context: .
-      dockerfile: Dockerfile.postgres
+    image: postgres:9.6
+    environment:
+        - "POSTGRES_PASSWORD=${B2SHARE_POSTGRESQL_PASSWORD}"
+        - "POSTGRES_USER=${B2SHARE_POSTGRESQL_USER}"
+        - "POSTGRES_DB=${B2SHARE_POSTGRESQL_DBNAME}"
+        - "PGDATA=/var/lib/postgresql/data"
     volumes:
-      - "./instance/postgres:/var/lib/postgresql/data"
-    hostname: db
-    ports:
-      - "127.0.0.1:5432:5432"
+        - "${B2SHARE_DATADIR}/postgres-data:/var/lib/postgresql/data"
+    expose:
+        - "5432"
 
   elasticsearch:
     build:
@@ -19,34 +21,24 @@ services:
       - "9200"
       - "9300"
     volumes:
-      - "./instance/elasticsearch:/usr/share/elasticsearch/data"
-    ports:
-      - "127.0.0.1:9200:9200"
-      - "127.0.0.1:9300:9300"
-    links:
-      - postgres
-
+      - "${B2SHARE_DATADIR}/elasticsearch:/usr/share/elasticsearch/data"
 
   redis:
-    image: redis:3.2-alpine
+    image: redis:5-alpine
     expose:
       - "6379"
-    ports:
-      - "127.0.0.1:6379:6379"
 
   mq:
-    hostname: b2share-redis
-    image: rabbitmq:3.6-management-alpine
+    image: rabbitmq:3.8-management-alpine
     restart: "always"
     environment:
-      - "RABBITMQ_DEFAULT_USER=b2share"
-      - "RABBITMQ_DEFAULT_PASS=b2share"
+      - "RABBITMQ_DEFAULT_USER=${B2SHARE_RABBITMQ_USER}"
+      - "RABBITMQ_DEFAULT_PASS=${B2SHARE_RABBITMQ_PASS}"
     expose:
       - "15672"
       - "5672"
-    ports:
-      - "127.0.0.1:15672:15672"
-      - "127.0.0.1:5672:5672"
+    volumes:
+        - "${B2SHARE_DATADIR}/rabbitmq-data:/var/lib/rabbitmq"
 
   b2share:
     build:
@@ -63,17 +55,15 @@ services:
       - "B2SHARE_CELERY_BROKER_URL='amqp://${B2SHARE_RABBITMQ_USER}:${B2SHARE_RABBITMQ_PASS}@mq:5672/'"
     volumes:
       - ".:/build"
-      - "$B2SHARE:/build/b2share"
-      - "./instance:/usr/var/b2share-instance"
+      - "${B2SHARE_SOURCE}:/eudat/b2share"
+      - "${B2SHARE_DATADIR}/b2share:/usr/var/b2share-instance"
     expose:
       - "5000"
-    ports:
-      - "127.0.0.1:5000:5000"
-      - "127.0.0.1:1984:1984"
     links:
       - elasticsearch
       - redis
       - postgres
+      - mq
 
   nginx:
     build: nginx
