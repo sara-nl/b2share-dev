@@ -72,17 +72,8 @@ Create elasticsearch index:
 Go inside container `b2share-dev_b2share_1` and run the `init_ui.sh` script:
 
 ```
-goinside b2share-dev_b2share_1
 ./init_ui.sh
 ```
-
-When updating any React or JS files, rerun this command or run:
-
-```
-npx webpack [--config webpack.config.devel.js]
-```
-
-in the `webui` folder. Use the `devel` config file during development, omit the option to get the production settings.
 
 ### Init demo data
 
@@ -101,6 +92,24 @@ Go inside container `b2share-dev_b2share_1` and run the `run.sh` script:
 ```
 ./run.sh
 ```
+
+You should now be able to open the website via [http://localhost](http://localhost).
+
+## Development
+
+When updating Python files, you need to rerun the Flask application. Inside the b2share container, kill the existing process (Ctrl-C):
+
+```
+./run.sh
+```
+
+When updating any React or JS files, rerun this command or run:
+
+```
+npx webpack [--config webpack.config.devel.js]
+```
+
+in the `webui` folder. Use the `devel` config file during development, omit the option to get the production settings.
 
 ## Optional
 
