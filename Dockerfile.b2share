@@ -69,7 +69,7 @@ RUN npm install --unsafe-perm
 
 WORKDIR /build
 ADD dockerize/uwsgi.ini b2share/uwsgi/uwsgi.ini
-ADD dockerize/scripts/* /build/
+RUN mkdir /eudat/workdir
 
 #
 # Install python module and dependencies
