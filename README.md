@@ -1,18 +1,72 @@
 # B2SHARE dev env
 
+This is the Docker definition for a development environment for B2SHARE.
+
+## Requirements
+
+Make sure to install:
+
+```
+docker
+docker-compose
+```
+
+## Prepare
+
+Clone this repository to a folder on your system:
+
+```
+git clone https://github.com/sara-nl/b2share-dev.git
+```
+
+Download the B2SHARE repository to a folder called `b2share` inside the dev environment:
+
+```
+git clone https://github.com/EUDAT-B2SHARE/b2share.git
+```
+
+Copy the environment file from the `dockerize` repository:
+
+```
+wget https://raw.githubusercontent.com/EUDAT-B2SHARE/dockerize/master/b2share.env -O .env
+```
+
+Set the environment variables in the env file, make sure to add `B2SHARE_SOURCE` and `B2SHARE_DATADIR`, e.g.:
+
+```
+B2SHARE_DATADIR=./instance
+B2SHARE_SOURCE=./b2share
+```
+
 ## Start docker composite
 
-```
-B2SHARE=/path/to/b2share/git/repo docker-compose up
-```
-
-for example:
+Start up your environment:
 
 ```
-B2SHARE=../b2share docker-compose up
+docker-compose up
 ```
 
-## Prepare UI
+Enter the b2share container.
+
+### Init configuration and run upgrades
+
+Go inside container `b2share-dev_b2share_1` and run the `init_config.sh` script:
+
+```
+./init_config.sh
+```
+
+### Init the indices
+
+Create elasticsearch index:
+
+```
+./init_index.sh
+```
+
+## Initialisation
+
+### Init UI
 (one time)
 
 Go inside container `b2share-dev_b2share_1` and run the `init_ui.sh` script:
@@ -28,32 +82,16 @@ When updating any React or JS files, rerun this command or run:
 npx webpack [--config webpack.config.devel.js]
 ```
 
-in the `webui` folder.
+in the `webui` folder. Use the `devel` config file during development, omit the option to get the production settings.
 
-## Init configuration and run upgrades
+### Init demo data
 
-Go inside container `b2share-dev_b2share_1` and run the `init_config.sh` script:
-
-```
-goinside b2share-dev_b2share_1
-./init_config.sh
-```
-
-## Init demo data
+Before you see any data, you can make sure some initial data is visible. This is optional.
 
 Go inside container `b2share-dev_b2share_1` and run the `init_data.sh` script:
 
 ```
-goinside b2share-dev_b2share_1
 ./init_data.sh
-```
-
-## Init index
-Create elasticsearch index:
-
-```
-goinside b2share-dev_b2share_1
-./init_index.sh
 ```
 
 ## Run B2SHARE
@@ -61,11 +99,12 @@ goinside b2share-dev_b2share_1
 Go inside container `b2share-dev_b2share_1` and run the `run.sh` script:
 
 ```
-goinside b2share-dev_b2share_1
 ./run.sh
 ```
 
 ## Optional
+
+Some additional steps can be executed.
 
 ### Create Fake DOIs and validate data
 
