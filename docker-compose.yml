@@ -29,7 +29,7 @@ services:
       - "6379"
 
   mq:
-    image: rabbitmq:3.8-management-alpine
+    image: rabbitmq:3.8.9-management-alpine
     restart: "always"
     environment:
       - "RABBITMQ_DEFAULT_USER=${B2SHARE_RABBITMQ_USER}"
@@ -37,8 +37,6 @@ services:
     expose:
       - "15672"
       - "5672"
-    volumes:
-        - "${B2SHARE_DATADIR}/rabbitmq-data:/var/lib/rabbitmq"
 
   b2share:
     build:

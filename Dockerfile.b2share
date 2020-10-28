@@ -60,14 +60,14 @@ WORKDIR /eudat
 ADD b2share/webui/package.json b2share/webui/package.json
 ADD b2share/webui/copy_files.sh b2share/webui/copy_files.sh
 
-WORKDIR /eudat/b2share/webui
-RUN npm install --unsafe-perm
+#WORKDIR /eudat/b2share/webui
+#RUN npm install --unsafe-perm
 
 #
 # UWSGI Config & Scripts
 #
 
-WORKDIR /build
+WORKDIR /eudat
 ADD dockerize/uwsgi.ini b2share/uwsgi/uwsgi.ini
 RUN mkdir /eudat/workdir
 
@@ -75,7 +75,7 @@ RUN mkdir /eudat/workdir
 # Install python module and dependencies
 #
 
-WORKDIR /eudat
+WORKDIR /eudat/b2share
 ADD b2share/setup.py setup.py
 ADD b2share/b2share/version.py b2share/version.py
 ADD b2share/requirements.txt requirements.txt
@@ -85,7 +85,13 @@ RUN pip3 install -e .
 # RUN pip3 install .[test]
 # RUN pip3 install Tornado==5.0 wdb.server wdb flask-wdb
 
-WORKDIR /eudat/b2share/demo
+WORKDIR /build/b2share
+ADD b2share/setup.py setup.py
+ADD b2share/b2share/version.py b2share/version.py
+ADD b2share/requirements.txt requirements.txt
+RUN pip3 install -e .
+
+WORKDIR /build/b2share/demo
 ADD b2share/demo/setup.py setup.py
 RUN pip3 install -e .
 
